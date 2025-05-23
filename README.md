@@ -1,4 +1,4 @@
-💡 AI Multi-Agent Hỗ Trợ Chuẩn Đoán Bệnh Tiểu Đường và Đột Quỵ
+💡 AI Multi-Agent Hỗ Trợ Chuẩn Đoán Bệnh Tiểu Đường và Đột Quỵ</n>
 📝 Mô tả dự án: Dự án xây dựng một hệ thống AI Multi-Agent sử dụng công nghệ LangGraph của LangChain để hỗ trợ chẩn đoán bệnh tiểu đường và đột quỵ.
     - Hệ thống bao gồm các thành phần chính:
         + Multi-Agent System: Một agent điều phối và hai agent chuyên biệt chẩn đoán từng loại bệnh.
