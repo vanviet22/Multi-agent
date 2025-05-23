@@ -157,14 +157,6 @@ Bạn chỉ cần trả lời những câu hỏi trên, mình sẽ phân tích n
 """
 )
 def diabetes_node(state: AgentState)-> AgentState:
-    user_messages = [msg.content.lower() for msg in state["messages"] if msg.type == "human"]
-    combined = " ".join(user_messages)
-
-    # Nếu chưa có nội dung sức khỏe → kích hoạt prompt hỏi người dùng
-    if not any(kw in combined for kw in ["kg", "m", "huyết áp", "cholesterol", "tuổi", "sức khỏe"]):
-        return {
-            "messages": [HumanMessage(content="Chào bạn! Mình là trợ lý đánh giá nguy cơ tiểu đường. Mình cần bạn cung cấp vài thông tin đơn giản nhé:\n1. Cân nặng của bạn là bao nhiêu kg?\n2. Chiều cao của bạn là bao nhiêu mét?\n3. Bạn có bị huyết áp cao không? (Có/Không)\n4. Bạn có bị cholesterol cao không? (Có/Không)\n5. Tuổi của bạn?\n6. Bạn đánh giá sức khỏe tổng quát của mình như thế nào? (Rất tốt/Tốt / Bình thường / Kém/rất kém)")]
-        }
     #Tìm kiếm thông tin và trả về kết quả
     result=diabetes_agent.invoke(state)
     return{

@@ -152,7 +152,8 @@
       contentChat.scrollTop = contentChat.scrollHeight; // Tự scroll xuống
 
       input.value = ''; // Xóa input
-
+      input.disabled = true;
+      btGui.disabled = true;
       try {
         const res = await fetch('http://127.0.0.1:8000/chat', {
           method: 'POST',
@@ -169,9 +170,14 @@
             🤖 Cảm ơn bạn đã sử dụng hệ thống tư vấn.
             Bạn hãy giữ gìn sức khỏe và đi khám định kì thường xuyên nhé!</div>`;
         }
-        contentChat.scrollTop = contentChat.scrollHeight;
       } catch (error) {
         contentChat.innerHTML += `<div class="message agent" style="color:red;">Lỗi kết nối API</div>`;
+      } finally {
+        // Kích hoạt lại input và nút gửi
+        input.disabled = false;
+        btGui.disabled = false;
+        input.focus(); // Trả lại focus cho người dùng
+        contentChat.scrollTop = contentChat.scrollHeight;
       }
     }
 
