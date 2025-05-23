@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Multi-Agent Chat</title>
+  <link rel="icon" type="image/png" href="./img/OIP.jpg">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Times New Roman', Times, serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #af5c5c;
+    }
+
+    #chatForm {
+      width: 60%;
+      max-width: 800px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      height: 90%;
+    }
+
+    #title {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #contentChat {
+      flex-grow: 1;
+      background-color: #e8e8e8;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-y: auto;
+      /* <- Cuộn dọc */
+      margin-bottom: 10px;
+      height: 400px;
+    }
+
+    #enter {
+      border: blanchedalmond 2px solid;
+      display: flex;
+      gap: 0;
+    }
+
+    #input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+    }
+
+    #btGui {
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      margin-left: 0px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #btGui img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #btGui :hover {
+      background-color: orange;
+    }
+
+    .message {
+      margin: 10px 0;
+      font-size: 20px;
+    }
+
+    .user {
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 70%;
+      display: inline-block;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      color: black;
+      float: right;
+      clear: both;
+      background-color: white;
+
+    }
+
+    .agent {
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 70%;
+      display: inline-block;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      color: black;
+      float: left;
+      clear: both;
+      background-color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="chatForm">
+    <h1 id="title">AI MULTI-AGENT hỗ trợ chuẩn đoán bệnh tiểu đường và bệnh đột quỵ</h1>
+    <div id="contentChat"></div>
+    <div id="enter">
+      <input type="text" id="input" placeholder="Nhập thông tin..." autocomplete="off" />
+      <button id="btGui" type="submit">
+        <img src="./img/13334364.png" alt="Gửi">
+      </button>
+    </div>
+  </form>
+
+  <script>
+    const contentChat = document.getElementById('contentChat');
+    const input = document.getElementById('input');
+    const btGui = document.getElementById('btGui');
+
+    // Tin nhắn chào mở đầu từ AI khi mới tải trang
+    window.addEventListener('load', function () {
+      const welcome = `🤖 Chào bạn! Tôi là trợ lý AI chuyên hỗ trợ kiểm tra bệnh tiểu đường và đột quỵ.\nBạn muốn kiểm tra bệnh nào trước?`;
+      contentChat.innerHTML += `<div class="message agent">${welcome}</div>`;
+      contentChat.scrollTop = contentChat.scrollHeight;
+    });
+    async function sendMessage() {
+      const msg = input.value.trim();
+      if (!msg) return; // Không gửi nếu input rỗng
+
+      // Hiện tin nhắn người dùng
+      contentChat.innerHTML += `<div class="message user">${msg}</div>`;
+      contentChat.scrollTop = contentChat.scrollHeight; // Tự scroll xuống
+
+      input.value = ''; // Xóa input
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        if (data.result) {
+          contentChat.innerHTML += `<div class="message agent">🤖 ${data.result}</div>`;
+        }
+        // Nếu agent kết thúc phiên
+        if (data.is_end) {
+          contentChat.innerHTML += `<div class="message agent" style="color: green; font-weight: bold;">
+            🤖 Cảm ơn bạn đã sử dụng hệ thống tư vấn.
+            Bạn hãy giữ gìn sức khỏe và đi khám định kì thường xuyên nhé!</div>`;
+        }
+        contentChat.scrollTop = contentChat.scrollHeight;
+      } catch (error) {
+        contentChat.innerHTML += `<div class="message agent" style="color:red;">Lỗi kết nối API</div>`;
+      }
+    }
+
+    // Khi bấm Enter trong input
+    input.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Khi click vào nút gửi
+    btGui.addEventListener('click', function (e) {
+      e.preventDefault();
+      sendMessage();
+    });
+
+  </script>
+</body>
+
+</html>

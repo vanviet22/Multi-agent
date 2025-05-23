@@ -1,0 +1,2 @@
+pandas numpy scikit-learn langgraph langchain langchain-community langchain-openai langchain-experimental tensorflow matplotlib
+fastapi uvicorn
